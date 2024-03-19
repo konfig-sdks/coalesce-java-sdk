@@ -1,0 +1,3381 @@
+openapi: 3.0.3
+info:
+  description: REST API for performing operations with the Coalesce backend.
+  title: Coalesce API
+  version: 1.0.0
+  x-konfig-ignore:
+    object-with-no-properties: true
+  x-konfig-has-globally-required-security: true
+servers:
+- description: US primary
+  url: https://app.coalescesoftware.io
+- description: US primary Azure
+  url: https://app.centralus.azure.coalescesoftware.io
+- description: Europe primary
+  url: https://app.eu.coalescesoftware.io
+- description: Australia primary
+  url: https://app.australia-southeast1.gcp.coalescesoftware.io
+- description: US AWS US East
+  url: https://app.us-east-1.aws.coalescesoftware.io
+- description: US AWS US East with PrivateLink
+  url: https://app.us-east-1.aws.privatelink.coalescesoftware.io
+- description: US AWS US West
+  url: https://app.us-west-2.aws.coalescesoftware.io
+- description: US AWS US West with PrivateLink
+  url: https://app.us-west-2.aws.privatelink.coalescesoftware.io
+security:
+- BearerAuth: []
+tags:
+- name: Jobs
+- name: Runs
+- name: Environments
+- name: Nodes
+paths:
+  /scheduler/startRun:
+    post:
+      deprecated: false
+      description: Querying this endpoint will initiate a new run to refresh your
+        data warehouse based on your specified details.
+      operationId: Jobs_initiateRun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobsInitiateRunRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n\t\"runCounter\": 1\n}"
+              schema:
+                $ref: '#/components/schemas/JobsInitiateRunResponse'
+          description: "200"
+        "400":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"400: Error Message\"\
+                    ,\n    \"errorDetail\":\"400: Error Message\"\n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsInitiateRun400Response'
+          description: "400"
+          x-do-not-generate: true
+        "401":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"401: Unable to authenticate,\
+                    \ please ensure your token is valid.\",\n    \"errorDetail\":\"\
+                    401: Unable to authenticate, please ensure your token is valid.\"\
+                    \n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsInitiateRun401Response'
+          description: "401"
+          x-do-not-generate: true
+      summary: Trigger Job to Run
+      tags:
+      - Jobs
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--scheduler-startRun
+      x-content-type: application/json
+      x-accepts: application/json
+  /scheduler/runStatus:
+    get:
+      deprecated: false
+      description: Querying this endpoint will allow you to receive updates on the
+        current status of a specific run.
+      operationId: Jobs_getStatusUpdates
+      parameters:
+      - description: ID of the run to query
+        explode: true
+        in: query
+        name: runCounter
+        required: true
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: |-
+                    {
+                      "runStatus": "completed",
+                      "runType": "deploy",
+                      "runLink": "https://app.coalescesoftware.io/runs/1"
+                    }
+              schema:
+                $ref: '#/components/schemas/JobsGetStatusUpdatesResponse'
+          description: "200"
+        "400":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"400: Error Message\"\
+                    ,\n    \"errorDetail\":\"400: Error Message\"\n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsGetStatusUpdates400Response'
+          description: "400"
+          x-do-not-generate: true
+        "401":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"401: Unable to authenticate,\
+                    \ please ensure your token is valid.\",\n    \"errorDetail\":\"\
+                    401: Unable to authenticate, please ensure your token is valid.\"\
+                    \n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsGetStatusUpdates401Response'
+          description: "401"
+          x-do-not-generate: true
+      summary: Get Job Status
+      tags:
+      - Jobs
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--scheduler-runStatus
+      x-accepts: application/json
+  /scheduler/rerun:
+    post:
+      deprecated: false
+      description: Querying this endpoint will initiate a new run to refresh your
+        data warehouse based on your specified details.
+      operationId: Jobs_triggerRerun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobsTriggerRerunRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n\t\"runCounter\": 1\n}"
+              schema:
+                $ref: '#/components/schemas/JobsTriggerRerunResponse'
+          description: "200"
+        "400":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"400: Error Message\"\
+                    ,\n    \"errorDetail\":\"400: Error Message\"\n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsTriggerRerun400Response'
+          description: "400"
+          x-do-not-generate: true
+        "401":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"401: Unable to authenticate,\
+                    \ please ensure your token is valid.\",\n    \"errorDetail\":\"\
+                    401: Unable to authenticate, please ensure your token is valid.\"\
+                    \n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsTriggerRerun401Response'
+          description: "401"
+          x-do-not-generate: true
+      summary: Trigger Job to Re-Run
+      tags:
+      - Jobs
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--scheduler-rerun
+      x-content-type: application/json
+      x-accepts: application/json
+  /scheduler/cancelRun:
+    post:
+      deprecated: false
+      description: Querying this endpoint will cancel a currently running job.
+      operationId: Jobs_cancelJobRun
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobsCancelJobRunRequest'
+      responses:
+        "204":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: ""
+              schema:
+                $ref: '#/components/schemas/JobsCancelJobRunResponse'
+          description: "204"
+        "400":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"400: Error Message\"\
+                    ,\n    \"errorDetail\":\"400: Error Message\"\n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsCancelJobRun400Response'
+          description: "400"
+          x-do-not-generate: true
+        "401":
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"error\":{\n    \"errorString\":\"401: Unable to authenticate,\
+                    \ please ensure your token is valid.\",\n    \"errorDetail\":\"\
+                    401: Unable to authenticate, please ensure your token is valid.\"\
+                    \n\t}\n}"
+              schema:
+                $ref: '#/components/schemas/JobsCancelJobRun401Response'
+          description: "401"
+          x-do-not-generate: true
+      summary: Cancel Running Job
+      tags:
+      - Jobs
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-post--scheduler-cancelRun
+      x-content-type: application/json
+      x-accepts: application/json
+  /api/v1/environments:
+    get:
+      description: Get a collection of environment information.
+      operationId: Environments_listInformation
+      parameters:
+      - description: Include the full detail of the environments.
+        explode: true
+        in: query
+        name: detail
+        required: false
+        schema:
+          default: false
+          example: false
+          type: boolean
+          x-konfig-original-example: false
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-environments-get-parameters-0-schema
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnvironmentsResponse'
+          description: A collection of environment information.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was invalid.
+          x-do-not-generate: true
+        "401":
+          description: User lacks authorization to perform this action.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The client is not permitted to perform the requested operation.
+          x-do-not-generate: true
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          x-do-not-generate: true
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server received an error from an upstream system.
+          x-do-not-generate: true
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The service is currently unavailable.
+          x-do-not-generate: true
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server did not receive a response in time from an upstream
+            system.
+          x-do-not-generate: true
+      summary: List Environments
+      tags:
+      - Environments
+      x-eov-operation-handler: EnvironmentHandlers
+      x-coa-command: list
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--api-v1-environments
+      x-accepts: application/json
+    summary: Environments
+    x-coa-command-group: environments
+  /api/v1/environments/{environmentID}:
+    get:
+      description: Get information about an environment.
+      operationId: Environments_getInformation
+      parameters:
+      - description: The environment ID.
+        explode: false
+        in: path
+        name: environmentID
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseEnvironment'
+          description: Information about an environment.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was invalid.
+          x-do-not-generate: true
+        "401":
+          description: User lacks authorization to perform this action.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The client is not permitted to perform the requested operation.
+          x-do-not-generate: true
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requested resource could not be found.
+          x-do-not-generate: true
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          x-do-not-generate: true
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server received an error from an upstream system.
+          x-do-not-generate: true
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The service is currently unavailable.
+          x-do-not-generate: true
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server did not receive a response in time from an upstream
+            system.
+          x-do-not-generate: true
+      summary: Get Environment
+      tags:
+      - Environments
+      x-eov-operation-handler: EnvironmentHandlers
+      x-coa-command: get
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--api-v1-environments-environmentID
+      x-accepts: application/json
+    summary: Environment
+    x-coa-command-group: environments
+  /api/v1/environments/{environmentID}/nodes:
+    get:
+      description: Get a collection of nodes for an environment
+      operationId: Nodes_list
+      parameters:
+      - description: The environment ID.
+        explode: false
+        in: path
+        name: environmentID
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: Include the full detail of the nodes.
+        explode: true
+        in: query
+        name: detail
+        required: false
+        schema:
+          default: false
+          example: false
+          type: boolean
+          x-konfig-original-example: false
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-environments-environmentID-nodes-get-parameters-0-schema
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodesResponse'
+          description: A collection of nodes for an environment.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was invalid.
+          x-do-not-generate: true
+        "401":
+          description: User lacks authorization to perform this action.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The client is not permitted to perform the requested operation.
+          x-do-not-generate: true
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requested resource could not be found.
+          x-do-not-generate: true
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          x-do-not-generate: true
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server received an error from an upstream system.
+          x-do-not-generate: true
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The service is currently unavailable.
+          x-do-not-generate: true
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server did not receive a response in time from an upstream
+            system.
+          x-do-not-generate: true
+      summary: List Nodes
+      tags:
+      - Nodes
+      x-eov-operation-handler: NodeHandlers
+      x-coa-command: list
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--api-v1-environments-environmentID-nodes
+      x-accepts: application/json
+    summary: Nodes
+    x-coa-command-group: nodes
+  /api/v1/environments/{environmentID}/nodes/{nodeID}:
+    get:
+      description: Get information about a node in an environment.
+      operationId: Nodes_getInformation
+      parameters:
+      - description: The environment ID.
+        explode: false
+        in: path
+        name: environmentID
+        required: true
+        schema:
+          type: string
+        style: simple
+      - description: The node ID.
+        explode: false
+        in: path
+        name: nodeID
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Node'
+          description: A node for an environment.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was invalid.
+          x-do-not-generate: true
+        "401":
+          description: User lacks authorization to perform this action.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The client is not permitted to perform the requested operation.
+          x-do-not-generate: true
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requested resource could not be found.
+          x-do-not-generate: true
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          x-do-not-generate: true
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server received an error from an upstream system.
+          x-do-not-generate: true
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The service is currently unavailable.
+          x-do-not-generate: true
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server did not receive a response in time from an upstream
+            system.
+          x-do-not-generate: true
+      summary: Get Node
+      tags:
+      - Nodes
+      x-eov-operation-handler: NodeHandlers
+      x-coa-command: get
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--api-v1-environments-environmentID-nodes-nodeID
+      x-accepts: application/json
+    summary: Node
+    x-coa-command-group: nodes
+  /api/v1/runs:
+    get:
+      description: Get a collection of information about runs.
+      operationId: Runs_listInformation
+      parameters:
+      - description: The maximum number of runs to return.
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 25
+          example: 25
+          maximum: 1000
+          minimum: 0
+          type: integer
+          x-konfig-original-example: 25
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-runs-get-parameters-0-schema
+        style: form
+      - description: "The starting run ID, runStartTime, or runEndTime (exclusive)\
+          \ for paging the query results."
+        explode: true
+        in: query
+        name: startingFrom
+        required: false
+        schema: {}
+        style: form
+      - description: The field used to order results.
+        explode: true
+        in: query
+        name: orderBy
+        required: false
+        schema:
+          $ref: '#/components/schemas/RunsOrderBy'
+        style: form
+      - description: The sort order for query results.
+        explode: true
+        in: query
+        name: orderByDirection
+        required: false
+        schema:
+          default: desc
+          description: The sort order for query results.
+          enum:
+          - asc
+          - desc
+          example: desc
+          type: string
+          x-konfig-original-example: desc
+          x-konfig-generated-schema: konfig-generated-schema-components-parameters-orderByDirection-schema
+        style: form
+      - description: A run type to filter the query results.
+        explode: true
+        in: query
+        name: runType
+        required: false
+        schema:
+          $ref: '#/components/schemas/RunType'
+        style: form
+      - description: A status value to filter the query results.
+        explode: true
+        in: query
+        name: runStatus
+        required: false
+        schema:
+          $ref: '#/components/schemas/RunStatus'
+        style: form
+      - description: An environment ID to filter the query results.
+        explode: true
+        in: query
+        name: environmentID
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: Include the full detail of the run.
+        explode: true
+        in: query
+        name: detail
+        required: false
+        schema:
+          default: false
+          example: false
+          type: boolean
+          x-konfig-original-example: false
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-runs-get-parameters-7-schema
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunsResponse'
+          description: A collection of runs.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was invalid.
+          x-do-not-generate: true
+        "401":
+          description: User lacks authorization to perform this action.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The client is not permitted to perform the requested operation.
+          x-do-not-generate: true
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          x-do-not-generate: true
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server received an error from an upstream system.
+          x-do-not-generate: true
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The service is currently unavailable.
+          x-do-not-generate: true
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server did not receive a response in time from an upstream
+            system.
+          x-do-not-generate: true
+      summary: List Runs
+      tags:
+      - Runs
+      x-eov-operation-handler: RunHandlers
+      x-coa-command: list
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--api-v1-runs
+      x-accepts: application/json
+    summary: Runs
+    x-coa-command-group: runs
+  /api/v1/runs/{runID}:
+    get:
+      description: Gets a single run.
+      operationId: Runs_getRunDetails
+      parameters:
+      - description: The run ID.
+        explode: false
+        in: path
+        name: runID
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunInfo'
+          description: A single run.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was invalid.
+          x-do-not-generate: true
+        "401":
+          description: User lacks authorization to perform this action.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The client is not permitted to perform the requested operation.
+          x-do-not-generate: true
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requested resource could not be found.
+          x-do-not-generate: true
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          x-do-not-generate: true
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server received an error from an upstream system.
+          x-do-not-generate: true
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The service is currently unavailable.
+          x-do-not-generate: true
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server did not receive a response in time from an upstream
+            system.
+          x-do-not-generate: true
+      summary: Get Run
+      tags:
+      - Runs
+      x-eov-operation-handler: RunHandlers
+      x-coa-command: get
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--api-v1-runs-runID
+      x-accepts: application/json
+    summary: Run
+    x-coa-command-group: runs
+  /api/v1/runs/{runID}/results:
+    get:
+      description: Get a collection of the results of a deploy or refresh run
+      operationId: Runs_listResults
+      parameters:
+      - description: The run ID.
+        explode: false
+        in: path
+        name: runID
+        required: true
+        schema:
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RunResultsResponse'
+          description: A collection of results for a deploy or refresh run.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The request was invalid.
+          x-do-not-generate: true
+        "401":
+          description: User lacks authorization to perform this action.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The client is not permitted to perform the requested operation.
+          x-do-not-generate: true
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The requested resource could not be found.
+          x-do-not-generate: true
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server encountered an unexpected condition that prevented
+            it from fulfilling the request.
+          x-do-not-generate: true
+        "502":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server received an error from an upstream system.
+          x-do-not-generate: true
+        "503":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The service is currently unavailable.
+          x-do-not-generate: true
+        "504":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: The server did not receive a response in time from an upstream
+            system.
+          x-do-not-generate: true
+      summary: List Run Results
+      tags:
+      - Runs
+      x-eov-operation-handler: RunHandlers
+      x-coa-command: list-results
+      x-konfig-operation-can-have-single-parameter: true
+      x-konfig-single-parameter-schema: konfig-generated-schema-single-parameter-schema-get--api-v1-runs-runID-results
+      x-accepts: application/json
+    summary: Run Results
+    x-coa-command-group: runs
+components:
+  parameters:
+    orderByDirection:
+      description: The sort order for query results.
+      explode: true
+      in: query
+      name: orderByDirection
+      required: false
+      schema:
+        default: desc
+        description: The sort order for query results.
+        enum:
+        - asc
+        - desc
+        example: desc
+        type: string
+        x-konfig-original-example: desc
+        x-konfig-generated-schema: konfig-generated-schema-components-parameters-orderByDirection-schema
+      style: form
+    context:
+      description: Contextual information required to identify a particular secret.
+      explode: false
+      in: path
+      name: context
+      required: true
+      schema:
+        type: string
+      style: simple
+  responses:
+    EnvironmentResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseEnvironment'
+      description: Information about an environment.
+    EnvironmentsResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/EnvironmentsResponse'
+      description: A collection of environment information.
+    NodeResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Node'
+      description: A node for an environment.
+    NodesResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NodesResponse'
+      description: A collection of nodes for an environment.
+    AllRegistryPackagesResult:
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: '#/components/schemas/RegistryPackageResult'
+            minItems: 0
+            type: array
+      description: A list of all packages in the registry.
+    AllRegistryPackageReleasesResult:
+      content:
+        application/json:
+          schema:
+            items:
+              $ref: '#/components/schemas/RegistryPackageReleaseResult'
+            minItems: 1
+            type: array
+      description: A list of all releases for a single package in the registry.
+    RegistryPackageResult:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegistryPackageResult'
+      description: A single package in the registry.
+    RegistryPackageReleaseResult:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RegistryPackageReleaseResult'
+      description: A single release for a single package in the registry.
+    RunResultsResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RunResultsResponse'
+      description: A collection of results for a deploy or refresh run.
+    RunResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RunInfo'
+      description: A single run.
+    RunsResponse:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RunsResponse'
+      description: A collection of runs.
+    AlreadyExistsError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The requested resource already exists.
+    BadGatewayError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The server received an error from an upstream system.
+      x-do-not-generate: true
+    ForbiddenError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The client is not permitted to perform the requested operation.
+      x-do-not-generate: true
+    GatewayTimeoutError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The server did not receive a response in time from an upstream
+        system.
+      x-do-not-generate: true
+    InternalServerError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The server encountered an unexpected condition that prevented it
+        from fulfilling the request.
+      x-do-not-generate: true
+    InvalidRequestError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The request was invalid.
+      x-do-not-generate: true
+    NotFoundError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The requested resource could not be found.
+      x-do-not-generate: true
+    ServiceUnavailableError:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+      description: The service is currently unavailable.
+      x-do-not-generate: true
+    Unauthorized:
+      description: User lacks authorization to perform this action.
+  schemas:
+    EnvironmentsResponse:
+      example:
+        data:
+        - runTimeParameters:
+            key: ""
+          createdAt: 2000-01-23T04:56:07.000+00:00
+          tagColors:
+            backgroundColor: backgroundColor
+            textColor: textColor
+          createdBy:
+            firstName: firstName
+            lastName: lastName
+            id: id
+          name: name
+          project: project
+          description: description
+          oauthEnabled: true
+          id: id
+          defaultStorageMapping: defaultStorageMapping
+          connectionAccount: connectionAccount
+          status: null
+        - runTimeParameters:
+            key: ""
+          createdAt: 2000-01-23T04:56:07.000+00:00
+          tagColors:
+            backgroundColor: backgroundColor
+            textColor: textColor
+          createdBy:
+            firstName: firstName
+            lastName: lastName
+            id: id
+          name: name
+          project: project
+          description: description
+          oauthEnabled: true
+          id: id
+          defaultStorageMapping: defaultStorageMapping
+          connectionAccount: connectionAccount
+          status: null
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/EnvironmentsResponse_data_inner'
+          type: array
+      required:
+      - data
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    EnvironmentSummary:
+      description: Summary information about an environment.
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          $ref: '#/components/schemas/UserSummary'
+        id:
+          type: string
+        name:
+          type: string
+        project:
+          type: string
+        status:
+          $ref: '#/components/schemas/EnvironmentHealth'
+        description:
+          type: string
+        connectionAccount:
+          type: string
+        defaultStorageMapping:
+          type: string
+        oauthEnabled:
+          type: boolean
+        runTimeParameters:
+          additionalProperties: true
+          type: object
+        tagColors:
+          $ref: '#/components/schemas/TagColor'
+      type: object
+    ErrorResponse:
+      description: Error detail in addition to the HTTP status code and text.
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    NodesResponse:
+      example:
+        data:
+        - schema: schema
+          database: database
+          locationName: locationName
+          name: name
+          id: id
+          nodeType: null
+        - schema: schema
+          database: database
+          locationName: locationName
+          name: name
+          id: id
+          nodeType: null
+      properties:
+        data:
+          items:
+            $ref: '#/components/schemas/NodesResponse_data_inner'
+          type: array
+      required:
+      - data
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    NodeSummary:
+      properties:
+        database:
+          type: string
+        id:
+          type: string
+        locationName:
+          type: string
+        name:
+          type: string
+        nodeType:
+          $ref: '#/components/schemas/NodeType'
+        schema:
+          type: string
+      required:
+      - database
+      - id
+      - locationName
+      - name
+      - nodeType
+      - schema
+      type: object
+    OrderByDirection:
+      description: The sort order for query results.
+      enum:
+      - asc
+      - desc
+      type: string
+    PackageUpdateReleaseInfo:
+      description: Package release information for an update operation.
+      properties:
+        version:
+          type: string
+        changeLog:
+          type: string
+        releaseID:
+          type: string
+      required:
+      - changeLog
+      - releaseID
+      - version
+      type: object
+    RunsOrderBy:
+      default: id
+      description: The field used to sort query results.
+      enum:
+      - id
+      - runStartTime
+      - runEndTime
+      example: id
+      type: string
+      x-konfig-original-example: id
+      x-konfig-generated-schema: konfig-generated-schema-components-schemas-RunsOrderBy
+    RunsResponse:
+      description: A collection of runs.
+      example:
+        data:
+        - runTimeParameters:
+            key: ""
+          runFailureReason: runFailureReason
+          runType: deploy
+          userCredentials:
+            snowflakeRole: snowflakeRole
+            snowflakeUsername: snowflakeUsername
+            snowflakeAuthType: null
+            snowflakeWarehouse: snowflakeWarehouse
+            snowflakeAccount: snowflakeAccount
+          reRunID: reRunID
+          version: 1
+          userID: userID
+          runStartTime: 2000-01-23T04:56:07.000+00:00
+          environmentID: environmentID
+          runEndTime: 2000-01-23T04:56:07.000+00:00
+          runDetails:
+            forceIgnoreEnvironmentStatus: true
+            canceled: true
+            jobID: 2
+            environmentID: environmentID
+            includeNodesSelector: includeNodesSelector
+            refreshDescription: refreshDescription
+            nodesForRefresh: 7
+            parallelism: 5
+            deployCommit: deployCommit
+            excludeNodesSelector: excludeNodesSelector
+            deployCommitMessage: deployCommitMessage
+            nodesInRun: 5
+          id: 6
+          runHistory:
+          - 9
+          - 9
+          runStatus: canceled
+        - runTimeParameters:
+            key: ""
+          runFailureReason: runFailureReason
+          runType: deploy
+          userCredentials:
+            snowflakeRole: snowflakeRole
+            snowflakeUsername: snowflakeUsername
+            snowflakeAuthType: null
+            snowflakeWarehouse: snowflakeWarehouse
+            snowflakeAccount: snowflakeAccount
+          reRunID: reRunID
+          version: 1
+          userID: userID
+          runStartTime: 2000-01-23T04:56:07.000+00:00
+          environmentID: environmentID
+          runEndTime: 2000-01-23T04:56:07.000+00:00
+          runDetails:
+            forceIgnoreEnvironmentStatus: true
+            canceled: true
+            jobID: 2
+            environmentID: environmentID
+            includeNodesSelector: includeNodesSelector
+            refreshDescription: refreshDescription
+            nodesForRefresh: 7
+            parallelism: 5
+            deployCommit: deployCommit
+            excludeNodesSelector: excludeNodesSelector
+            deployCommitMessage: deployCommitMessage
+            nodesInRun: 5
+          id: 6
+          runHistory:
+          - 9
+          - 9
+          runStatus: canceled
+        limit: 0
+        orderByDirection: null
+        orderBy: id
+      properties:
+        limit:
+          description: The maximum number of runs returned by this query.
+          type: integer
+        orderByDirection:
+          $ref: '#/components/schemas/OrderByDirection'
+        orderBy:
+          $ref: '#/components/schemas/RunsOrderBy'
+        data:
+          items:
+            $ref: '#/components/schemas/RunsResponse_data_inner'
+          type: array
+      required:
+      - data
+      - limit
+      - orderBy
+      - orderByDirection
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    RunResultsResponse:
+      example:
+        data:
+        - isRunning: true
+          name: name
+          queryResults:
+          - rowsUpdated: 1
+            rowsDeleted: 0
+            error:
+              errorString: errorString
+              errorDetail: errorDetail
+            warehouse: warehouse
+            queryID: queryID
+            sql: sql
+            isRunning: true
+            success: true
+            name: name
+            startTime: 2000-01-23T04:56:07.000+00:00
+            endTime: 2000-01-23T04:56:07.000+00:00
+            rowsInserted: 6
+            status: status
+          - rowsUpdated: 1
+            rowsDeleted: 0
+            error:
+              errorString: errorString
+              errorDetail: errorDetail
+            warehouse: warehouse
+            queryID: queryID
+            sql: sql
+            isRunning: true
+            success: true
+            name: name
+            startTime: 2000-01-23T04:56:07.000+00:00
+            endTime: 2000-01-23T04:56:07.000+00:00
+            rowsInserted: 6
+            status: status
+          nodeID: nodeID
+          renderQueryResult:
+            rowsUpdated: 1
+            rowsDeleted: 0
+            error:
+              errorString: errorString
+              errorDetail: errorDetail
+            warehouse: warehouse
+            queryID: queryID
+            sql: sql
+            isRunning: true
+            success: true
+            name: name
+            startTime: 2000-01-23T04:56:07.000+00:00
+            endTime: 2000-01-23T04:56:07.000+00:00
+            rowsInserted: 6
+            status: status
+        - isRunning: true
+          name: name
+          queryResults:
+          - rowsUpdated: 1
+            rowsDeleted: 0
+            error:
+              errorString: errorString
+              errorDetail: errorDetail
+            warehouse: warehouse
+            queryID: queryID
+            sql: sql
+            isRunning: true
+            success: true
+            name: name
+            startTime: 2000-01-23T04:56:07.000+00:00
+            endTime: 2000-01-23T04:56:07.000+00:00
+            rowsInserted: 6
+            status: status
+          - rowsUpdated: 1
+            rowsDeleted: 0
+            error:
+              errorString: errorString
+              errorDetail: errorDetail
+            warehouse: warehouse
+            queryID: queryID
+            sql: sql
+            isRunning: true
+            success: true
+            name: name
+            startTime: 2000-01-23T04:56:07.000+00:00
+            endTime: 2000-01-23T04:56:07.000+00:00
+            rowsInserted: 6
+            status: status
+          nodeID: nodeID
+          renderQueryResult:
+            rowsUpdated: 1
+            rowsDeleted: 0
+            error:
+              errorString: errorString
+              errorDetail: errorDetail
+            warehouse: warehouse
+            queryID: queryID
+            sql: sql
+            isRunning: true
+            success: true
+            name: name
+            startTime: 2000-01-23T04:56:07.000+00:00
+            endTime: 2000-01-23T04:56:07.000+00:00
+            rowsInserted: 6
+            status: status
+      properties:
+        data:
+          description: A collection of run results.
+          items:
+            $ref: '#/components/schemas/RunResult'
+          type: array
+      required:
+      - data
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    RunSummary:
+      properties:
+        id:
+          description: The run ID.
+          type: integer
+        reRunID:
+          description: "If this is a re-run, the ID of the original operation."
+          type: string
+        runStartTime:
+          description: The datetime at which the run started.
+          format: date-time
+          type: string
+        runEndTime:
+          description: The datetime at which the run ended.
+          format: date-time
+          type: string
+        runType:
+          enum:
+          - deploy
+          - refresh
+          type: string
+        runStatus:
+          enum:
+          - canceled
+          - completed
+          - failed
+          - running
+          - waitingToRun
+          type: string
+        environmentID:
+          description: The environment in which the run operation was applied.
+          type: string
+        runFailureReason:
+          description: Information about the cause of a run failure.
+          type: string
+        version:
+          type: integer
+        runDetails:
+          $ref: '#/components/schemas/DRRunDetails'
+        runHistory:
+          items:
+            type: integer
+          type: array
+        runTimeParameters:
+          additionalProperties: true
+          type: object
+        userCredentials:
+          $ref: '#/components/schemas/SnowflakeUserCredentials'
+        userID:
+          type: string
+      required:
+      - id
+      - runStatus
+      - runType
+      type: object
+    BaseEnvironment:
+      additionalProperties: true
+      description: An environment is used for deploying your data pipeline to non-development
+        Snowflake environments.
+      example:
+        runTimeParameters:
+          key: ""
+        tagColors:
+          backgroundColor: backgroundColor
+          textColor: textColor
+        name: name
+        description: description
+        oauthEnabled: true
+        project: project
+        defaultStorageMapping: defaultStorageMapping
+        connectionAccount: connectionAccount
+      properties:
+        description:
+          type: string
+        connectionAccount:
+          type: string
+        defaultStorageMapping:
+          type: string
+        name:
+          type: string
+        oauthEnabled:
+          type: boolean
+        runTimeParameters:
+          additionalProperties: true
+          type: object
+        tagColors:
+          $ref: '#/components/schemas/TagColor'
+        project:
+          type: string
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    EnvironmentHealth:
+      enum:
+      - Deleting
+      - Deploying
+      - Failed Deploy
+      - Failed Dev Run
+      - Failed Refresh
+      - Initializing
+      - Refreshing
+      - Running Dev Run
+      - Waiting
+      type: string
+    EnvironmentStorageLocationMappings:
+      additionalProperties:
+        $ref: '#/components/schemas/EnvironmentStorageLocationMappings_value'
+      type: object
+    TagColor:
+      example:
+        backgroundColor: backgroundColor
+        textColor: textColor
+      properties:
+        backgroundColor:
+          type: string
+        textColor:
+          type: string
+      type: object
+    UserSummary:
+      description: Summary information about a user.
+      example:
+        firstName: firstName
+        lastName: lastName
+        id: id
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+      required:
+      - id
+      type: object
+    Error:
+      example:
+        errorString: errorString
+        errorDetail: errorDetail
+      properties:
+        errorString:
+          description: The error message.
+          type: string
+        errorDetail:
+          description: Additional detail about the error.
+          type: string
+      required:
+      - errorString
+      type: object
+    Node: {}
+    AliasToStepIDMapping:
+      additionalProperties:
+        type: string
+      type: object
+    AppliedColumnTests:
+      additionalProperties:
+        type: boolean
+      type: object
+    BaseNode:
+      additionalProperties: true
+      properties:
+        description:
+          type: string
+        database:
+          type: string
+        id:
+          type: string
+        locationName:
+          type: string
+        name:
+          type: string
+        nodeType:
+          $ref: '#/components/schemas/NodeType'
+        schema:
+          type: string
+      required:
+      - database
+      - description
+      - id
+      - locationName
+      - name
+      - nodeType
+      - schema
+      type: object
+    ColumnMetadata:
+      properties:
+        description:
+          type: string
+        appliedColumnTests:
+          additionalProperties:
+            type: boolean
+          type: object
+        columnID:
+          type: string
+        columnReferences:
+          items:
+            $ref: '#/components/schemas/IntermediateColumnRefResult'
+          type: array
+        config:
+          additionalProperties: true
+          type: object
+        dataType:
+          type: string
+        defaultValue:
+          type: string
+        hashDetails:
+          $ref: '#/components/schemas/HashMetadata'
+        hashedColumns:
+          items:
+            $ref: '#/components/schemas/ColumnReference'
+          type: array
+        isBusinessKey:
+          description: Tags the column as a business key.
+          type: boolean
+        isChangeTracking:
+          description: Tags the column as a change tracking column in type 2 dimensions.
+          type: boolean
+        isSurrogateKey:
+          description: "Tags the column as a surrogate key, e.g. DIM_CUSTOMER_KEY."
+          type: boolean
+        keyColumnType:
+          enum:
+          - None
+          - primaryBusinessKey
+          - surrogateKey
+          type: string
+        name:
+          type: string
+        nullable:
+          type: boolean
+        primaryKey:
+          description: Tags the column as a primary key.
+          type: boolean
+        sources:
+          items:
+            $ref: '#/components/schemas/SourceColumnReference'
+          type: array
+        systemColumnType:
+          enum:
+          - None
+          - sysCreateDate
+          - sysCurrentFlag
+          - sysEndDate
+          - sysStartDate
+          - sysUpdateDate
+          - sysVersion
+          type: string
+        transform:
+          type: string
+        uniqueKey:
+          type: boolean
+      required:
+      - columnID
+      - dataType
+      - description
+      - name
+      - nullable
+      type: object
+    ColumnReference:
+      properties:
+        columnID:
+          type: string
+        nodeID:
+          type: string
+      required:
+      - columnID
+      - nodeID
+      type: object
+    CustomSQL:
+      properties:
+        customSQL:
+          type: string
+      required:
+      - customSQL
+      type: object
+    HashAlgorithm:
+      enum:
+      - MD5
+      - SHA1
+      - SHA256
+      type: string
+    HashMetadata:
+      properties:
+        hashAlgorithm:
+          $ref: '#/components/schemas/HashAlgorithm'
+        hashType:
+          enum:
+          - ChangeHash
+          - Hash
+          - HubHash
+          - LinkHash
+          - None
+          type: string
+        hubHashes:
+          items:
+            $ref: '#/components/schemas/ColumnReference'
+          type: array
+      required:
+      - hashAlgorithm
+      type: object
+    IntermediateColumnRefResult:
+      properties:
+        columnName:
+          type: string
+        tableName:
+          nullable: true
+          type: string
+      required:
+      - columnName
+      - tableName
+      type: object
+    JoinCondition:
+      properties:
+        joinCondition:
+          type: string
+      required:
+      - joinCondition
+      type: object
+    NodeType:
+      enum:
+      - Dimension
+      - Fact
+      - Hub
+      - Link
+      - Satellite
+      - Source
+      - Stage
+      - View
+      - persistentStage
+      type: string
+    RefLink:
+      properties:
+        locationName:
+          type: string
+        nodeName:
+          type: string
+      required:
+      - locationName
+      - nodeName
+      type: object
+    SourceColumnReference:
+      $ref: '#/components/schemas/VSourceColumnReference'
+    SourceColumnReferenceV1:
+      properties:
+        columnReferences:
+          items:
+            $ref: '#/components/schemas/ColumnReference'
+          type: array
+        transform:
+          type: string
+      required:
+      - transform
+      type: object
+    SourceColumnReferenceV2:
+      properties:
+        transform:
+          type: string
+      required:
+      - transform
+      type: object
+    SourceMap:
+      properties:
+        aliases:
+          additionalProperties:
+            type: string
+          type: object
+        customSQL:
+          $ref: '#/components/schemas/CustomSQL'
+        dependencies:
+          items:
+            $ref: '#/components/schemas/RefLink'
+          type: array
+        join:
+          $ref: '#/components/schemas/JoinCondition'
+        name:
+          type: string
+        noLinkRefs:
+          items:
+            $ref: '#/components/schemas/RefLink'
+          type: array
+      required:
+      - dependencies
+      - join
+      - name
+      - noLinkRefs
+      type: object
+    RunStatus:
+      enum:
+      - canceled
+      - completed
+      - failed
+      - running
+      - waitingToRun
+      type: string
+    RunType:
+      enum:
+      - deploy
+      - refresh
+      type: string
+    UserConnectionType:
+      enum:
+      - Basic
+      - Cloud
+      - KeyPair
+      - OAuth
+      type: string
+    DeployRunDetails:
+      properties:
+        canceled:
+          type: boolean
+        deployCommit:
+          type: string
+        deployCommitMessage:
+          type: string
+        environmentID:
+          type: string
+        parallelism:
+          type: integer
+        nodesInRun:
+          type: integer
+        excludeNodesSelector:
+          type: string
+        forceIgnoreEnvironmentStatus:
+          type: boolean
+        includeNodesSelector:
+          type: string
+        jobID:
+          type: integer
+        refreshDescription:
+          type: string
+        nodesForRefresh:
+          type: integer
+      required:
+      - environmentID
+      type: object
+    RefreshRunDetails:
+      properties:
+        canceled:
+          type: boolean
+        environmentID:
+          type: string
+        excludeNodesSelector:
+          type: string
+        forceIgnoreEnvironmentStatus:
+          type: boolean
+        includeNodesSelector:
+          type: string
+        jobID:
+          type: integer
+        parallelism:
+          type: integer
+        refreshDescription:
+          type: string
+        nodesForRefresh:
+          type: integer
+        nodesInRun:
+          type: integer
+      required:
+      - environmentID
+      type: object
+    RunDetails:
+      $ref: '#/components/schemas/DRRunDetails'
+    RunInfo:
+      description: "The full details of a run, without the run results."
+      example:
+        runTimeParameters:
+          key: ""
+        runStartTime: 2000-01-23T04:56:07.000+00:00
+        runEndTime: 2000-01-23T04:56:07.000+00:00
+        runType: null
+        userCredentials:
+          snowflakeRole: snowflakeRole
+          snowflakeUsername: snowflakeUsername
+          snowflakeAuthType: null
+          snowflakeWarehouse: snowflakeWarehouse
+          snowflakeAccount: snowflakeAccount
+        reRunID: reRunID
+        runDetails:
+          forceIgnoreEnvironmentStatus: true
+          canceled: true
+          jobID: 2
+          environmentID: environmentID
+          includeNodesSelector: includeNodesSelector
+          refreshDescription: refreshDescription
+          nodesForRefresh: 7
+          parallelism: 5
+          deployCommit: deployCommit
+          excludeNodesSelector: excludeNodesSelector
+          deployCommitMessage: deployCommitMessage
+          nodesInRun: 5
+        id: 6
+        version: 0
+        runHistory:
+        - 1
+        - 1
+        userID: userID
+        runStatus: null
+      properties:
+        version:
+          type: integer
+        id:
+          type: integer
+        reRunID:
+          type: string
+        runDetails:
+          $ref: '#/components/schemas/DRRunDetails'
+        runEndTime:
+          format: date-time
+          type: string
+        runHistory:
+          items:
+            type: integer
+          type: array
+        runStartTime:
+          format: date-time
+          type: string
+        runStatus:
+          $ref: '#/components/schemas/RunStatus'
+        runTimeParameters:
+          additionalProperties: true
+          type: object
+        runType:
+          $ref: '#/components/schemas/RunType'
+        userCredentials:
+          $ref: '#/components/schemas/SnowflakeUserCredentials'
+        userID:
+          type: string
+      required:
+      - id
+      - runDetails
+      - runStatus
+      - runTimeParameters
+      - runType
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    SnowflakeUserCredentials:
+      description: Information about the Snowflake account used to perform a run.
+      example:
+        snowflakeRole: snowflakeRole
+        snowflakeUsername: snowflakeUsername
+        snowflakeAuthType: null
+        snowflakeWarehouse: snowflakeWarehouse
+        snowflakeAccount: snowflakeAccount
+      properties:
+        snowflakeAccount:
+          type: string
+        snowflakeAuthType:
+          $ref: '#/components/schemas/UserConnectionType'
+        snowflakeRole:
+          type: string
+        snowflakeUsername:
+          type: string
+        snowflakeWarehouse:
+          type: string
+      required:
+      - snowflakeAccount
+      - snowflakeAuthType
+      - snowflakeUsername
+      type: object
+    QueryResult:
+      example:
+        rowsUpdated: 1
+        rowsDeleted: 0
+        error:
+          errorString: errorString
+          errorDetail: errorDetail
+        warehouse: warehouse
+        queryID: queryID
+        sql: sql
+        isRunning: true
+        success: true
+        name: name
+        startTime: 2000-01-23T04:56:07.000+00:00
+        endTime: 2000-01-23T04:56:07.000+00:00
+        rowsInserted: 6
+        status: status
+      properties:
+        endTime:
+          format: date-time
+          type: string
+        error:
+          $ref: '#/components/schemas/Error'
+        isRunning:
+          type: boolean
+        name:
+          type: string
+        queryID:
+          type: string
+        rowsDeleted:
+          type: integer
+        rowsInserted:
+          type: integer
+        rowsUpdated:
+          type: integer
+        sql:
+          type: string
+        startTime:
+          format: date-time
+          type: string
+        status:
+          type: string
+        success:
+          type: boolean
+        warehouse:
+          type: string
+      required:
+      - isRunning
+      - name
+      - sql
+      - status
+      - success
+      type: object
+    RunResult:
+      description: The result output describing each query processed during a run.
+      example:
+        isRunning: true
+        name: name
+        queryResults:
+        - rowsUpdated: 1
+          rowsDeleted: 0
+          error:
+            errorString: errorString
+            errorDetail: errorDetail
+          warehouse: warehouse
+          queryID: queryID
+          sql: sql
+          isRunning: true
+          success: true
+          name: name
+          startTime: 2000-01-23T04:56:07.000+00:00
+          endTime: 2000-01-23T04:56:07.000+00:00
+          rowsInserted: 6
+          status: status
+        - rowsUpdated: 1
+          rowsDeleted: 0
+          error:
+            errorString: errorString
+            errorDetail: errorDetail
+          warehouse: warehouse
+          queryID: queryID
+          sql: sql
+          isRunning: true
+          success: true
+          name: name
+          startTime: 2000-01-23T04:56:07.000+00:00
+          endTime: 2000-01-23T04:56:07.000+00:00
+          rowsInserted: 6
+          status: status
+        nodeID: nodeID
+        renderQueryResult:
+          rowsUpdated: 1
+          rowsDeleted: 0
+          error:
+            errorString: errorString
+            errorDetail: errorDetail
+          warehouse: warehouse
+          queryID: queryID
+          sql: sql
+          isRunning: true
+          success: true
+          name: name
+          startTime: 2000-01-23T04:56:07.000+00:00
+          endTime: 2000-01-23T04:56:07.000+00:00
+          rowsInserted: 6
+          status: status
+      properties:
+        isRunning:
+          type: boolean
+        name:
+          type: string
+        nodeID:
+          type: string
+        queryResults:
+          items:
+            $ref: '#/components/schemas/QueryResult'
+          type: array
+        renderQueryResult:
+          $ref: '#/components/schemas/QueryResult'
+      required:
+      - isRunning
+      - name
+      - nodeID
+      - queryResults
+      type: object
+    RegistryPackageReleaseResult:
+      description: A single release of a package in the registry.
+      properties:
+        version:
+          type: string
+        createdBy:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/RegistryPackageReleaseResult_createdAt'
+        updatedBy:
+          type: string
+        updatedAt:
+          $ref: '#/components/schemas/RegistryPackageReleaseResult_createdAt'
+        changeLog:
+          type: string
+        packageID:
+          type: string
+        releaseID:
+          type: string
+        storagePath:
+          type: string
+      required:
+      - changeLog
+      - createdAt
+      - createdBy
+      - packageID
+      - releaseID
+      - storagePath
+      - version
+      type: object
+    RegistryPackageResult:
+      description: A single package in the registry.
+      properties:
+        description:
+          type: string
+        updatedBy:
+          type: string
+        updatedAt:
+          $ref: '#/components/schemas/RegistryPackageReleaseResult_createdAt'
+        name:
+          type: string
+        org:
+          type: string
+        latestRelease:
+          type: string
+        id:
+          type: string
+        publicReleases:
+          items:
+            type: string
+          minItems: 0
+          type: array
+      required:
+      - description
+      - id
+      - latestRelease
+      - name
+      - org
+      - publicReleases
+      type: object
+    SourceColumnMetadata:
+      properties:
+        columns:
+          items:
+            $ref: '#/components/schemas/ColumnMetadata'
+          type: array
+        join:
+          $ref: '#/components/schemas/SourceColumnMetadata_join'
+        sourceMapping:
+          items:
+            $ref: '#/components/schemas/SourceMap'
+          type: array
+      required:
+      - columns
+      type: object
+    MaterializationType:
+      enum:
+      - table
+      - view
+      type: string
+    NodeTest:
+      properties:
+        description:
+          type: string
+        continueOnFailure:
+          type: boolean
+        name:
+          type: string
+        runOrder:
+          $ref: '#/components/schemas/TestRunOrder'
+        templateString:
+          type: string
+      required:
+      - continueOnFailure
+      - description
+      - name
+      - runOrder
+      - templateString
+      type: object
+    SQLNodeMetadata:
+      properties:
+        description:
+          type: string
+        appliedNodeTests:
+          default: []
+          example: []
+          items:
+            $ref: '#/components/schemas/NodeTest'
+          type: array
+          x-konfig-original-example: []
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-SQLNodeMetadata-properties-appliedNodeTests
+        columns:
+          default: []
+          example: []
+          items:
+            $ref: '#/components/schemas/ColumnMetadata'
+          type: array
+          x-konfig-original-example: []
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-SQLNodeMetadata-properties-columns
+        cteString:
+          type: string
+        destinationName:
+          type: string
+        enabledColumnTestIDs:
+          items:
+            type: string
+          type: array
+        mapping:
+          additionalProperties: {}
+          type: object
+        materializationOption:
+          type: string
+        sourceMapping:
+          items:
+            $ref: '#/components/schemas/SourceMap'
+          type: array
+      required:
+      - appliedNodeTests
+      - columns
+      - enabledColumnTestIDs
+      - sourceMapping
+      type: object
+    TestRunOrder:
+      enum:
+      - After
+      - Before
+      type: string
+    UserConfig:
+      additionalProperties: {}
+      type: object
+    JobsInitiateRunRequest:
+      example:
+        userCredentials:
+          snowflakePassword: snowflakePassword
+          snowflakeKeyPairPass: snowflakeKeyPairPass
+          snowflakeRole: snowflakeRole
+          snowflakeUsername: snowflakeUsername
+          snowflakeAuthType: Basic
+          snowflakeWarehouse: snowflakeWarehouse
+          snowflakeKeyPairKey: snowflakeKeyPairKey
+        runDetails:
+          jobID: jobID
+          forceIgnoreWorkspaceStatus: true
+          environmentID: environmentID
+          includeNodesSelector: includeNodesSelector
+          parallelism: 16
+          excludeNodesSelector: excludeNodesSelector
+        parameters: parameters
+      properties:
+        parameters:
+          description: Contains parameters to be used in the Refresh
+          format: json
+          type: string
+        runDetails:
+          $ref: '#/components/schemas/JobsInitiateRunRequest_runDetails'
+        userCredentials:
+          $ref: '#/components/schemas/JobsInitiateRunRequest_userCredentials'
+      required:
+      - runDetails
+      type: object
+    JobsTriggerRerunRequest:
+      example:
+        userCredentials:
+          snowflakePassword: snowflakePassword
+          snowflakeKeyPairPass: snowflakeKeyPairPass
+          snowflakeRole: snowflakeRole
+          snowflakeUsername: snowflakeUsername
+          snowflakeAuthType: Basic
+          snowflakeWarehouse: snowflakeWarehouse
+          snowflakeKeyPairKey: snowflakeKeyPairKey
+        runDetails:
+          forceIgnoreWorkspaceStatus: true
+          runID: runID
+        parameters: parameters
+      properties:
+        parameters:
+          description: Contains parameters to be used in the Refresh
+          format: json
+          type: string
+        runDetails:
+          $ref: '#/components/schemas/JobsTriggerRerunRequest_runDetails'
+        userCredentials:
+          $ref: '#/components/schemas/JobsTriggerRerunRequest_userCredentials'
+      required:
+      - runDetails
+      - userCredentials
+      type: object
+    JobsCancelJobRunRequest:
+      example:
+        environmentID: environmentID
+        runID: 0
+        orgID: orgID
+      properties:
+        runID:
+          description: The ID of the run the user would like to cancel.
+          format: int32
+          type: integer
+        orgID:
+          description: The organization's ID of the run the user would like to cancel.
+          type: string
+        environmentID:
+          description: The environment ID of the run the user would like to cancel.
+          type: string
+      required:
+      - runID
+      type: object
+    JobsInitiateRunResponse:
+      example:
+        runCounter: 1
+      properties:
+        runCounter:
+          default: 0
+          example: 1
+          type: integer
+          x-konfig-original-example: 1
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRunResponse-properties-runCounter
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    JobsInitiateRun400Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRun400Response-properties-error-properties-errorString
+            errorDetail:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRun400Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    JobsInitiateRun401Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRun401Response-properties-error-properties-errorString
+            errorDetail:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRun401Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    JobsGetStatusUpdatesResponse:
+      example:
+        runType: deploy
+        runLink: https://app.coalescesoftware.io/runs/1
+        runStatus: completed
+      properties:
+        runStatus:
+          enum:
+          - completed
+          - initializing
+          - rendering
+          - canceled
+          - failed
+          - running
+          - waitingToRun
+          type: string
+        runType:
+          enum:
+          - deploy
+          - refresh
+          type: string
+        runLink:
+          example: https://app.coalescesoftware.io/runs/1
+          type: string
+          x-konfig-original-example: https://app.coalescesoftware.io/runs/1
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsGetStatusUpdatesResponse-properties-runLink
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    JobsGetStatusUpdates400Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsGetStatusUpdates400Response-properties-error-properties-errorString
+            errorDetail:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsGetStatusUpdates400Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    JobsGetStatusUpdates401Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsGetStatusUpdates401Response-properties-error-properties-errorString
+            errorDetail:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsGetStatusUpdates401Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    JobsTriggerRerunResponse:
+      example:
+        runCounter: 1
+      properties:
+        runCounter:
+          default: 0
+          example: 1
+          type: integer
+          x-konfig-original-example: 1
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsTriggerRerunResponse-properties-runCounter
+      type: object
+      x-konfig-is-used-in-successful-response: true
+    JobsTriggerRerun400Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsTriggerRerun400Response-properties-error-properties-errorString
+            errorDetail:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsTriggerRerun400Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    JobsTriggerRerun401Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsTriggerRerun401Response-properties-error-properties-errorString
+            errorDetail:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsTriggerRerun401Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    JobsCancelJobRunResponse:
+      example: ""
+      type: string
+      x-konfig-original-example: ""
+      x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsCancelJobRunResponse
+      x-konfig-is-used-in-successful-response: true
+    JobsCancelJobRun400Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsCancelJobRun400Response-properties-error-properties-errorString
+            errorDetail:
+              example: "400: Error Message"
+              type: string
+              x-konfig-original-example: "400: Error Message"
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsCancelJobRun400Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    JobsCancelJobRun401Response:
+      properties:
+        error:
+          properties:
+            errorString:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsCancelJobRun401Response-properties-error-properties-errorString
+            errorDetail:
+              example: "401: Unable to authenticate, please ensure your token is valid."
+              type: string
+              x-konfig-original-example: "401: Unable to authenticate, please ensure\
+                \ your token is valid."
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsCancelJobRun401Response-properties-error-properties-errorDetail
+          type: object
+      type: object
+      x-konfig-is-used-in-non-successful-response: true
+      x-do-not-generate: true
+    konfig-generated-schema-paths--api-v1-environments-get-parameters-0-schema:
+      example: false
+      type: boolean
+      x-do-not-generate: true
+    konfig-generated-schema-paths--api-v1-environments-environmentID-nodes-get-parameters-0-schema:
+      example: false
+      type: boolean
+      x-do-not-generate: true
+    konfig-generated-schema-paths--api-v1-runs-get-parameters-0-schema:
+      example: 25
+      type: number
+      x-do-not-generate: true
+    konfig-generated-schema-paths--api-v1-runs-get-parameters-7-schema:
+      example: false
+      type: boolean
+      x-do-not-generate: true
+    konfig-generated-schema-components-parameters-orderByDirection-schema:
+      example: desc
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-RunsOrderBy:
+      example: id
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-SQLNodeMetadata-properties-appliedNodeTests:
+      items:
+        type: string
+      type: array
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-SQLNodeMetadata-properties-columns:
+      items:
+        type: string
+      type: array
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsInitiateRunRequest-properties-runDetails-properties-parallelism:
+      example: 16
+      type: number
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsInitiateRunRequest-properties-userCredentials-properties-snowflakeAuthType:
+      example: Basic
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsTriggerRerunRequest-properties-userCredentials-properties-snowflakeAuthType:
+      example: Basic
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsInitiateRunResponse-properties-runCounter:
+      example: 1
+      type: number
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsInitiateRun400Response-properties-error-properties-errorString:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsInitiateRun400Response-properties-error-properties-errorDetail:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsInitiateRun401Response-properties-error-properties-errorString:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsInitiateRun401Response-properties-error-properties-errorDetail:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsGetStatusUpdatesResponse-properties-runLink:
+      example: https://app.coalescesoftware.io/runs/1
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsGetStatusUpdates400Response-properties-error-properties-errorString:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsGetStatusUpdates400Response-properties-error-properties-errorDetail:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsGetStatusUpdates401Response-properties-error-properties-errorString:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsGetStatusUpdates401Response-properties-error-properties-errorDetail:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsTriggerRerunResponse-properties-runCounter:
+      example: 1
+      type: number
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsTriggerRerun400Response-properties-error-properties-errorString:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsTriggerRerun400Response-properties-error-properties-errorDetail:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsTriggerRerun401Response-properties-error-properties-errorString:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsTriggerRerun401Response-properties-error-properties-errorDetail:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsCancelJobRunResponse:
+      example: ""
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsCancelJobRun400Response-properties-error-properties-errorString:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsCancelJobRun400Response-properties-error-properties-errorDetail:
+      example: "400: Error Message"
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsCancelJobRun401Response-properties-error-properties-errorString:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-components-schemas-JobsCancelJobRun401Response-properties-error-properties-errorDetail:
+      example: "401: Unable to authenticate, please ensure your token is valid."
+      type: string
+      x-do-not-generate: true
+    konfig-generated-schema-single-parameter-schema-post--scheduler-startRun:
+      properties:
+        parameters:
+          description: Contains parameters to be used in the Refresh
+          format: json
+          type: string
+        runDetails:
+          description: Object containing the necessary target details required to
+            successfully start a refresh.
+          properties:
+            environmentID:
+              description: The environment being refreshed
+              type: string
+            includeNodesSelector:
+              description: Nodes included for an ad-hoc job
+              type: string
+            excludeNodesSelector:
+              description: Nodes excluded for an ad-hoc job.
+              type: string
+            jobID:
+              description: The ID of a job being run.
+              type: string
+            parallelism:
+              default: 16
+              description: Maximum number of parallel nodes to run.
+              example: 16
+              format: int32
+              type: integer
+              x-konfig-original-example: 16
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRunRequest-properties-runDetails-properties-parallelism
+            forceIgnoreWorkspaceStatus:
+              description: Allows refreshing an environment even if the last deployment
+                on that environment failed. Use with caution as this can put your
+                environment into an even worse state.
+              type: boolean
+          required:
+          - environmentID
+          type: object
+        userCredentials:
+          description: "userCredentials contains connection credentials for connecting\
+            \ to Snowflake. Currently only basic auth (username/password) may be specified.\
+            \ If however, an OAuth connection has been established for the given environment\
+            \ specified in runDetails.environmentID, you may omit userCredentials.\
+            \ In that case, Coalesce will use the OAuth connection to connect with\
+            \ Snowflake."
+          properties:
+            snowflakeUsername:
+              description: Snowflake Account Username. Required when snowflakeAuthType
+                is Basic
+              type: string
+            snowflakePassword:
+              description: Snowflake Account password. Required when snowflakeAuthType
+                is Basic
+              type: string
+            snowflakeKeyPairKey:
+              description: The PEM-encoded private key to use when authenticating
+                to Snowflake. Required when using the KeyPair authentication type.
+                Newlines must be encoded as "\n" within the request.
+              type: string
+            snowflakeKeyPairPass:
+              description: The password to use to decrypt the private key. This is
+                only applicable when the authentication type is KeyPair and the private
+                key is encrypted.
+              type: string
+            snowflakeWarehouse:
+              description: Snowflake compute warehouse
+              type: string
+            snowflakeRole:
+              description: Snowflake user role
+              type: string
+            snowflakeAuthType:
+              default: Basic
+              description: "Options: Basic | KeyPair | OAuth"
+              example: Basic
+              type: string
+              x-konfig-original-example: Basic
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRunRequest-properties-userCredentials-properties-snowflakeAuthType
+          type: object
+      required:
+      - runDetails
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--scheduler-runStatus:
+      properties:
+        runCounter:
+          format: int32
+          type: integer
+      required:
+      - runCounter
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - runCounter
+    konfig-generated-schema-single-parameter-schema-post--scheduler-rerun:
+      properties:
+        parameters:
+          description: Contains parameters to be used in the Refresh
+          format: json
+          type: string
+        runDetails:
+          description: Contains the runID to be re-run.
+          properties:
+            runID:
+              description: The number of the run you want to be retried.
+              type: string
+            forceIgnoreWorkspaceStatus:
+              description: Allows refreshing an environment even if the last deployment
+                on that environment failed. Use with caution as this can put your
+                environment into an even worse state.
+              type: boolean
+          required:
+          - runID
+          type: object
+        userCredentials:
+          description: "userCredentials contains connection credentials for connecting\
+            \ to Snowflake. Currently only basic auth (username/password) may be specified.\
+            \ If however, an OAuth connection has been established for the given environment\
+            \ specified in runDetails.environmentID, you may ommit userCredentials.\
+            \ In that case, Coalesce will use the OAuth connection to connect with\
+            \ Snowflake."
+          properties:
+            snowflakeUsername:
+              description: Snowflake Account Username. Required when snowflakeAuthType
+                is Basic
+              type: string
+            snowflakePassword:
+              description: Snowflake Account password. Required when snowflakeAuthType
+                is Basic
+              type: string
+            snowflakeKeyPairKey:
+              description: The PEM-encoded private key to use when authenticating
+                to Snowflake. Required when using the KeyPair authentication type.
+                Newlines must be encoded as "\n" within the request.
+              type: string
+            snowflakeKeyPairPass:
+              description: The password to use to decrypt the private key. This is
+                only applicable when the authentication type is KeyPair and the private
+                key is encrypted.
+              type: string
+            snowflakeWarehouse:
+              description: Snowflake compute warehouse
+              type: string
+            snowflakeRole:
+              description: Snowflake user role
+              type: string
+            snowflakeAuthType:
+              default: Basic
+              description: "Options: Basic | KeyPair | OAuth"
+              example: Basic
+              type: string
+              x-konfig-original-example: Basic
+              x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsTriggerRerunRequest-properties-userCredentials-properties-snowflakeAuthType
+          type: object
+      required:
+      - runDetails
+      - userCredentials
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-post--scheduler-cancelRun:
+      properties:
+        runID:
+          description: The ID of the run the user would like to cancel.
+          format: int32
+          type: integer
+        orgID:
+          description: The organization's ID of the run the user would like to cancel.
+          type: string
+        environmentID:
+          description: The environment ID of the run the user would like to cancel.
+          type: string
+      required:
+      - runID
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--api-v1-environments:
+      properties:
+        detail:
+          default: false
+          example: false
+          type: boolean
+          x-konfig-original-example: false
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-environments-get-parameters-0-schema
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - detail
+    konfig-generated-schema-single-parameter-schema-get--api-v1-environments-environmentID:
+      properties: {}
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--api-v1-environments-environmentID-nodes:
+      properties:
+        detail:
+          default: false
+          example: false
+          type: boolean
+          x-konfig-original-example: false
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-environments-environmentID-nodes-get-parameters-0-schema
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - detail
+    konfig-generated-schema-single-parameter-schema-get--api-v1-environments-environmentID-nodes-nodeID:
+      properties: {}
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter: []
+    konfig-generated-schema-single-parameter-schema-get--api-v1-runs:
+      properties:
+        limit:
+          default: 25
+          example: 25
+          maximum: 1000
+          minimum: 0
+          type: integer
+          x-konfig-original-example: 25
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-runs-get-parameters-0-schema
+        startingFrom: {}
+        orderBy:
+          $ref: '#/components/schemas/RunsOrderBy'
+        orderByDirection:
+          default: desc
+          description: The sort order for query results.
+          enum:
+          - asc
+          - desc
+          example: desc
+          type: string
+          x-konfig-original-example: desc
+          x-konfig-generated-schema: konfig-generated-schema-components-parameters-orderByDirection-schema
+        runType:
+          $ref: '#/components/schemas/RunType'
+        runStatus:
+          $ref: '#/components/schemas/RunStatus'
+        environmentID:
+          type: string
+        detail:
+          default: false
+          example: false
+          type: boolean
+          x-konfig-original-example: false
+          x-konfig-generated-schema: konfig-generated-schema-paths--api-v1-runs-get-parameters-7-schema
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - limit
+      - startingFrom
+      - orderBy
+      - orderByDirection
+      - runType
+      - runStatus
+      - environmentID
+      - detail
+    konfig-generated-schema-single-parameter-schema-get--api-v1-runs-runID:
+      properties:
+        runID:
+          type: integer
+      required:
+      - runID
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - runID
+    konfig-generated-schema-single-parameter-schema-get--api-v1-runs-runID-results:
+      properties:
+        runID:
+          type: integer
+      required:
+      - runID
+      type: object
+      x-do-not-generate: true
+      x-konfig-is-parameter:
+      - runID
+    VSourceColumnReference:
+      properties:
+        columnReferences:
+          items:
+            $ref: '#/components/schemas/ColumnReference'
+          type: array
+        transform:
+          type: string
+      required:
+      - transform
+      type: object
+    DRRunDetails:
+      example:
+        forceIgnoreEnvironmentStatus: true
+        canceled: true
+        jobID: 2
+        environmentID: environmentID
+        includeNodesSelector: includeNodesSelector
+        refreshDescription: refreshDescription
+        nodesForRefresh: 7
+        parallelism: 5
+        deployCommit: deployCommit
+        excludeNodesSelector: excludeNodesSelector
+        deployCommitMessage: deployCommitMessage
+        nodesInRun: 5
+      properties:
+        canceled:
+          type: boolean
+        deployCommit:
+          type: string
+        deployCommitMessage:
+          type: string
+        environmentID:
+          type: string
+        parallelism:
+          type: integer
+        nodesInRun:
+          type: integer
+        excludeNodesSelector:
+          type: string
+        forceIgnoreEnvironmentStatus:
+          type: boolean
+        includeNodesSelector:
+          type: string
+        jobID:
+          type: integer
+        refreshDescription:
+          type: string
+        nodesForRefresh:
+          type: integer
+      required:
+      - environmentID
+      type: object
+    EnvironmentsResponse_data_inner:
+      description: Summary information about an environment.
+      example:
+        runTimeParameters:
+          key: ""
+        createdAt: 2000-01-23T04:56:07.000+00:00
+        tagColors:
+          backgroundColor: backgroundColor
+          textColor: textColor
+        createdBy:
+          firstName: firstName
+          lastName: lastName
+          id: id
+        name: name
+        project: project
+        description: description
+        oauthEnabled: true
+        id: id
+        defaultStorageMapping: defaultStorageMapping
+        connectionAccount: connectionAccount
+        status: null
+      properties:
+        createdAt:
+          format: date-time
+          type: string
+        createdBy:
+          $ref: '#/components/schemas/UserSummary'
+        id:
+          type: string
+        name:
+          type: string
+        project:
+          type: string
+        status:
+          $ref: '#/components/schemas/EnvironmentHealth'
+        description:
+          type: string
+        connectionAccount:
+          type: string
+        defaultStorageMapping:
+          type: string
+        oauthEnabled:
+          type: boolean
+        runTimeParameters:
+          additionalProperties: true
+          type: object
+        tagColors:
+          $ref: '#/components/schemas/TagColor'
+      type: object
+    NodesResponse_data_inner:
+      example:
+        schema: schema
+        database: database
+        locationName: locationName
+        name: name
+        id: id
+        nodeType: null
+      properties:
+        database:
+          type: string
+        id:
+          type: string
+        locationName:
+          type: string
+        name:
+          type: string
+        nodeType:
+          $ref: '#/components/schemas/NodeType'
+        schema:
+          type: string
+      required:
+      - database
+      - id
+      - locationName
+      - name
+      - nodeType
+      - schema
+      type: object
+    RunsResponse_data_inner:
+      example:
+        runTimeParameters:
+          key: ""
+        runFailureReason: runFailureReason
+        runType: deploy
+        userCredentials:
+          snowflakeRole: snowflakeRole
+          snowflakeUsername: snowflakeUsername
+          snowflakeAuthType: null
+          snowflakeWarehouse: snowflakeWarehouse
+          snowflakeAccount: snowflakeAccount
+        reRunID: reRunID
+        version: 1
+        userID: userID
+        runStartTime: 2000-01-23T04:56:07.000+00:00
+        environmentID: environmentID
+        runEndTime: 2000-01-23T04:56:07.000+00:00
+        runDetails:
+          forceIgnoreEnvironmentStatus: true
+          canceled: true
+          jobID: 2
+          environmentID: environmentID
+          includeNodesSelector: includeNodesSelector
+          refreshDescription: refreshDescription
+          nodesForRefresh: 7
+          parallelism: 5
+          deployCommit: deployCommit
+          excludeNodesSelector: excludeNodesSelector
+          deployCommitMessage: deployCommitMessage
+          nodesInRun: 5
+        id: 6
+        runHistory:
+        - 9
+        - 9
+        runStatus: canceled
+      properties:
+        id:
+          description: The run ID.
+          type: integer
+        reRunID:
+          description: "If this is a re-run, the ID of the original operation."
+          type: string
+        runStartTime:
+          description: The datetime at which the run started.
+          format: date-time
+          type: string
+        runEndTime:
+          description: The datetime at which the run ended.
+          format: date-time
+          type: string
+        runType:
+          enum:
+          - deploy
+          - refresh
+          type: string
+        runStatus:
+          enum:
+          - canceled
+          - completed
+          - failed
+          - running
+          - waitingToRun
+          type: string
+        environmentID:
+          description: The environment in which the run operation was applied.
+          type: string
+        runFailureReason:
+          description: Information about the cause of a run failure.
+          type: string
+        version:
+          type: integer
+        runDetails:
+          $ref: '#/components/schemas/DRRunDetails'
+        runHistory:
+          items:
+            type: integer
+          type: array
+        runTimeParameters:
+          additionalProperties: true
+          type: object
+        userCredentials:
+          $ref: '#/components/schemas/SnowflakeUserCredentials'
+        userID:
+          type: string
+      required:
+      - id
+      - runStatus
+      - runType
+      type: object
+    EnvironmentStorageLocationMappings_value:
+      properties:
+        database:
+          type: string
+        schema:
+          type: string
+      type: object
+    RegistryPackageReleaseResult_createdAt:
+      properties:
+        nanoseconds:
+          type: number
+        seconds:
+          type: number
+      required:
+      - nanoseconds
+      - seconds
+      type: object
+    SourceColumnMetadata_join:
+      properties:
+        joinCondition:
+          type: string
+      required:
+      - joinCondition
+      type: object
+    JobsInitiateRunRequest_runDetails:
+      description: Object containing the necessary target details required to successfully
+        start a refresh.
+      example:
+        jobID: jobID
+        forceIgnoreWorkspaceStatus: true
+        environmentID: environmentID
+        includeNodesSelector: includeNodesSelector
+        parallelism: 16
+        excludeNodesSelector: excludeNodesSelector
+      properties:
+        environmentID:
+          description: The environment being refreshed
+          type: string
+        includeNodesSelector:
+          description: Nodes included for an ad-hoc job
+          type: string
+        excludeNodesSelector:
+          description: Nodes excluded for an ad-hoc job.
+          type: string
+        jobID:
+          description: The ID of a job being run.
+          type: string
+        parallelism:
+          default: 16
+          description: Maximum number of parallel nodes to run.
+          example: 16
+          format: int32
+          type: integer
+          x-konfig-original-example: 16
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRunRequest-properties-runDetails-properties-parallelism
+        forceIgnoreWorkspaceStatus:
+          description: Allows refreshing an environment even if the last deployment
+            on that environment failed. Use with caution as this can put your environment
+            into an even worse state.
+          type: boolean
+      required:
+      - environmentID
+      type: object
+    JobsInitiateRunRequest_userCredentials:
+      description: "userCredentials contains connection credentials for connecting\
+        \ to Snowflake. Currently only basic auth (username/password) may be specified.\
+        \ If however, an OAuth connection has been established for the given environment\
+        \ specified in runDetails.environmentID, you may omit userCredentials. In\
+        \ that case, Coalesce will use the OAuth connection to connect with Snowflake."
+      example:
+        snowflakePassword: snowflakePassword
+        snowflakeKeyPairPass: snowflakeKeyPairPass
+        snowflakeRole: snowflakeRole
+        snowflakeUsername: snowflakeUsername
+        snowflakeAuthType: Basic
+        snowflakeWarehouse: snowflakeWarehouse
+        snowflakeKeyPairKey: snowflakeKeyPairKey
+      properties:
+        snowflakeUsername:
+          description: Snowflake Account Username. Required when snowflakeAuthType
+            is Basic
+          type: string
+        snowflakePassword:
+          description: Snowflake Account password. Required when snowflakeAuthType
+            is Basic
+          type: string
+        snowflakeKeyPairKey:
+          description: The PEM-encoded private key to use when authenticating to Snowflake.
+            Required when using the KeyPair authentication type. Newlines must be
+            encoded as "\n" within the request.
+          type: string
+        snowflakeKeyPairPass:
+          description: The password to use to decrypt the private key. This is only
+            applicable when the authentication type is KeyPair and the private key
+            is encrypted.
+          type: string
+        snowflakeWarehouse:
+          description: Snowflake compute warehouse
+          type: string
+        snowflakeRole:
+          description: Snowflake user role
+          type: string
+        snowflakeAuthType:
+          default: Basic
+          description: "Options: Basic | KeyPair | OAuth"
+          example: Basic
+          type: string
+          x-konfig-original-example: Basic
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsInitiateRunRequest-properties-userCredentials-properties-snowflakeAuthType
+      type: object
+    JobsTriggerRerunRequest_runDetails:
+      description: Contains the runID to be re-run.
+      example:
+        forceIgnoreWorkspaceStatus: true
+        runID: runID
+      properties:
+        runID:
+          description: The number of the run you want to be retried.
+          type: string
+        forceIgnoreWorkspaceStatus:
+          description: Allows refreshing an environment even if the last deployment
+            on that environment failed. Use with caution as this can put your environment
+            into an even worse state.
+          type: boolean
+      required:
+      - runID
+      type: object
+    JobsTriggerRerunRequest_userCredentials:
+      description: "userCredentials contains connection credentials for connecting\
+        \ to Snowflake. Currently only basic auth (username/password) may be specified.\
+        \ If however, an OAuth connection has been established for the given environment\
+        \ specified in runDetails.environmentID, you may ommit userCredentials. In\
+        \ that case, Coalesce will use the OAuth connection to connect with Snowflake."
+      example:
+        snowflakePassword: snowflakePassword
+        snowflakeKeyPairPass: snowflakeKeyPairPass
+        snowflakeRole: snowflakeRole
+        snowflakeUsername: snowflakeUsername
+        snowflakeAuthType: Basic
+        snowflakeWarehouse: snowflakeWarehouse
+        snowflakeKeyPairKey: snowflakeKeyPairKey
+      properties:
+        snowflakeUsername:
+          description: Snowflake Account Username. Required when snowflakeAuthType
+            is Basic
+          type: string
+        snowflakePassword:
+          description: Snowflake Account password. Required when snowflakeAuthType
+            is Basic
+          type: string
+        snowflakeKeyPairKey:
+          description: The PEM-encoded private key to use when authenticating to Snowflake.
+            Required when using the KeyPair authentication type. Newlines must be
+            encoded as "\n" within the request.
+          type: string
+        snowflakeKeyPairPass:
+          description: The password to use to decrypt the private key. This is only
+            applicable when the authentication type is KeyPair and the private key
+            is encrypted.
+          type: string
+        snowflakeWarehouse:
+          description: Snowflake compute warehouse
+          type: string
+        snowflakeRole:
+          description: Snowflake user role
+          type: string
+        snowflakeAuthType:
+          default: Basic
+          description: "Options: Basic | KeyPair | OAuth"
+          example: Basic
+          type: string
+          x-konfig-original-example: Basic
+          x-konfig-generated-schema: konfig-generated-schema-components-schemas-JobsTriggerRerunRequest-properties-userCredentials-properties-snowflakeAuthType
+      type: object
+  securitySchemes:
+    sec0:
+      in: header
+      name: Authorization
+      type: apiKey
+      x-bearer-format: bearer
+      x-default: ""
+      x-konfig-globally-required-security: false
+    BearerAuth:
+      scheme: bearer
+      type: http
+      x-konfig-globally-required-security: true
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+  samples-enabled: true
+
